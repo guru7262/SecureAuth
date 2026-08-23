@@ -1,0 +1,24 @@
+{
+  "name": "secureauth",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "client",
+    "api"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:client\" \"npm run dev:api\"",
+    "dev:client": "npm run dev --workspace=client",
+    "dev:api": "npm run dev --workspace=api",
+    "build": "npm run build --workspaces",
+    "build:client": "npm run build --workspace=client",
+    "build:api": "npm run build --workspace=api",
+    "install:all": "npm install && npm install --workspaces"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

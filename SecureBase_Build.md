@@ -21,9 +21,9 @@ Full auth-provider mode (SecureBase issuing JWTs and owning the login flow) is d
 
 **Build:**
 1. **Owner-facing side (SecureBase's own product):**
-   - Owner signup/login (this is SecureBase's own account system, separate from their end-users)
-   - Generates an API key per owner, used to authenticate event calls
-   - Basic dashboard shell (empty state, will fill in later phases)
+   - ✅ Owner signup/login (this is SecureBase's own account system, separate from their end-users) — **DONE**
+   - ✅ Generates an API key per owner, used to authenticate event calls — **DONE** (JWT-based auth with HttpOnly cookies)
+   - ✅ Basic dashboard shell (empty state, will fill in later phases) — **DONE**
 
 2. **Event ingestion (what the owner's app calls):**
    - REST API: `POST /events/signup`, `POST /events/login`, `POST /events/login-failed`
@@ -36,7 +36,7 @@ Full auth-provider mode (SecureBase issuing JWTs and owning the login flow) is d
    - Failed login attempts
    - Simple list of recent auth events
 
-**Tech:** Node.js + Express, MongoDB (SecureBase's own event store), API key auth for the ingestion endpoint, React dashboard.
+**Tech:** Node.js + Express (Vercel Serverless Functions), MongoDB (SecureBase's own event store), JWT auth for the ingestion endpoint, React dashboard (Vite).
 
 **Definition of done:** A test "owner" gets an API key, a test script fires signup/login/failed-login events at your ingestion endpoint, and they show up correctly on the dashboard. Killing the SecureBase server does not break any owner-side auth (there isn't any owner-side dependency to break, by design).
 

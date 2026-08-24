@@ -73,19 +73,11 @@ export default function App() {
   return (
     <>
       <Routes>
-        <Route element={<PublicRoute><Login /></PublicRoute>}>
-          <Route path="/login" element={<Login />} />
-        </Route>
-        <Route element={<PublicRoute><Signup /></PublicRoute>}>
-          <Route path="/signup" element={<Signup />} />
-        </Route>
-        <Route element={<PublicRoute><ForgotPassword /></PublicRoute>}>
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-        </Route>
-        <Route element={<ProtectedRoute><Dashboard /></ProtectedRoute>}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        </Route>
+        <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+        <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
+        <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
       <ToastContainer />

@@ -1,20 +1,20 @@
 :root {
-  --bg-primary: #000000;
-  --bg-secondary: #000000;
-  --bg-tertiary: #111111;
-  --bg-card: #000000;
-  --bg-input: #000000;
-  --border-primary: #333333;
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #0a0a0a;
+  --bg-tertiary: #171717;
+  --bg-card: #0a0a0a;
+  --bg-input: #111111;
+  --border-primary: #2e2e2e;
   --border-secondary: #444444;
   --border-focus: #888888;
-  --text-primary: #ffffff;
-  --text-secondary: #888888;
-  --text-muted: #666666;
-  --text-inverse: #000000;
-  --accent-primary: #ffffff;
-  --accent-secondary: #888888;
-  --accent-hover: #eeeeee;
-  --accent-glow: rgba(255, 255, 255, 0.1);
+  --text-primary: #ededed;
+  --text-secondary: #a1a1a1;
+  --text-muted: #888888;
+  --text-inverse: #0a0a0a;
+  --accent-primary: #ededed;
+  --accent-secondary: #a1a1a1;
+  --accent-hover: #ffffff;
+  --accent-glow: rgba(255, 255, 255, 0.08);
   --success: #0070f3;
   --success-glow: rgba(0, 112, 243, 0.15);
   --error: #ee0000;
@@ -34,6 +34,7 @@
   --transition-base: 150ms ease;
   --transition-slow: 250ms ease;
 }
+
 
 
 *, *::before, *::after {

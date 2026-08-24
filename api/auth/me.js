@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb'
 import { getCollection } from '../lib/mongodb.js'
 import { authenticateRequest } from '../lib/auth.js'
 import { successResponse, errorResponse, withErrorHandling } from '../lib/response.js'
@@ -15,7 +16,7 @@ async function handler(req, res) {
   const usersCollection = await getCollection('users')
 
   const user = await usersCollection.findOne(
-    { _id: { $oid: decoded.userId } },
+    { _id: new ObjectId(decoded.userId) },
     { projection: { passwordHash: 0 } }
   )
 

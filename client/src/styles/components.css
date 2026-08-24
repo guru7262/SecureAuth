@@ -539,8 +539,6 @@
   width: 18px;
   height: 18px;
   flex-shrink: 0;
-<<<<<<< Updated upstream
-=======
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -616,7 +614,7 @@
   background: var(--bg-tertiary);
   padding: 0.5rem 0.75rem;
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   color: var(--text-muted);
 }
 .db-workspace svg { margin-left: auto; }
@@ -637,9 +635,9 @@
 .db-nav-label {
   padding: 0 0.75rem 0.25rem;
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.5625rem;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   color: var(--text-muted);
 }
 .db-nav-item {
@@ -650,7 +648,7 @@
   border-radius: var(--radius-md);
   padding: 0.5rem 0.75rem;
   text-align: left;
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   color: var(--text-secondary);
   background: transparent;
   border: none;
@@ -671,7 +669,7 @@
   background: rgba(238,0,0,.15);
   padding: 0.125rem 0.375rem;
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.5625rem;
   font-style: normal;
   color: var(--error);
 }
@@ -709,13 +707,13 @@
 }
 .db-avatar-sm { width: 1.75rem; height: 1.75rem; }
 .db-user-name {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   font-weight: 500;
   color: var(--text-primary);
 }
 .db-user-role {
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.5625rem;
   color: var(--text-muted);
 }
 .db-user-more {
@@ -745,9 +743,9 @@
 }
 .db-logo-sub {
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.5625rem;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.18em;
   color: var(--text-muted);
 }
 
@@ -817,7 +815,7 @@
   border: 1px solid var(--border-primary);
   padding: 0.125rem 0.375rem;
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.5625rem;
 }
 
 .db-top-actions {
@@ -834,7 +832,7 @@
   background: rgba(0,112,243,.05);
   padding: 0.375rem 0.75rem;
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   color: var(--success);
 }
 @media (min-width: 640px) {
@@ -905,14 +903,14 @@
 /* --- eyebrow / titles --- */
 .db-eyebrow {
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.16em;
   color: var(--text-muted);
 }
 .db-page-title {
   margin-top: 0.25rem;
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 600;
   letter-spacing: -0.03em;
   color: var(--text-primary);
@@ -924,7 +922,7 @@
 }
 .db-section-title {
   margin-top: 0.25rem;
-  font-size: 1.0625rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--text-primary);
 }
@@ -939,7 +937,7 @@
   background: rgba(0,112,243,.05);
   padding: 0.5rem 0.75rem;
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   color: var(--success);
 }
 .db-pulse {
@@ -1004,7 +1002,7 @@
 }
 .db-kpi-live {
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   color: var(--text-muted);
 }
 .db-kpi-bottom {
@@ -1015,12 +1013,12 @@
   gap: 0.5rem;
 }
 .db-kpi-label {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
 }
 .db-kpi-value {
   margin-top: 0.25rem;
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 600;
   letter-spacing: -0.03em;
   color: var(--text-primary);
@@ -1031,7 +1029,7 @@
   align-items: center;
   gap: 0.25rem;
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   color: var(--success);
 }
 .db-kpi-change span { color: var(--text-muted); }
@@ -1076,7 +1074,7 @@
   border-radius: var(--radius-sm);
   padding: 0.25rem 0.625rem;
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   color: var(--text-muted);
   background: transparent;
   border: none;
@@ -1097,7 +1095,7 @@
   flex-wrap: wrap;
   gap: 1rem;
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   color: var(--text-muted);
 }
 .db-dot {
@@ -1150,7 +1148,7 @@
 }
 .db-gauge-max {
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.5625rem;
   color: var(--text-muted);
 }
 .db-risk-info {
@@ -1172,7 +1170,7 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 0.25rem;
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.5625rem;
   color: var(--text-muted);
 }
 .db-risk-high { color: var(--warning); }
@@ -1185,7 +1183,7 @@
   border: 1px solid var(--border-primary);
   padding: 0.25rem 0.5rem;
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.5625rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -1235,17 +1233,17 @@
   width: 100%;
   min-width: 700px;
   text-align: left;
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   border-collapse: collapse;
 }
 .db-table th {
   background: var(--bg-tertiary);
   padding: 0.75rem 1.25rem;
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.5625rem;
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   color: var(--text-muted);
 }
 .db-table td {
@@ -1292,11 +1290,11 @@
 .db-policy-dot-danger { background: var(--error); }
 .db-policy-label {
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   color: var(--text-primary);
 }
 .db-policy-action {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
 }
 .db-policy-btn {
@@ -1321,7 +1319,7 @@
   justify-content: space-between;
 }
 .db-link-btn {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   color: var(--text-secondary);
   background: transparent;
   border: none;
@@ -1357,16 +1355,19 @@
 .db-event-icon-danger { background: rgba(238,0,0,.1); color: var(--error); }
 .db-event-icon-warning { background: rgba(245,166,35,.1); color: var(--warning); }
 .db-event-icon-safe { background: rgba(0,112,243,.1); color: var(--success); }
-.db-event-title { font-size: 0.8125rem; font-weight: 500; color: var(--text-primary); }
+.db-event-title { font-size: 0.75rem; font-weight: 500; color: var(--text-primary); }
 .db-event-meta {
   margin-top: 0.25rem;
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   color: var(--text-muted);
 }
 
 /* --- responsive sidebar overlay --- */
 @media (max-width: 1023px) {
   .db-sidebar { position: fixed; }
+<<<<<<< HEAD
 >>>>>>> Stashed changes
+=======
+>>>>>>> e9584f24a28f4f86a1229f41e720ec8b99ceea96
 }

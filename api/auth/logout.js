@@ -1,5 +1,5 @@
-import { clearAuthCookie } from '../../lib/auth.js'
-import { successResponse, withErrorHandling } from '../../lib/response.js'
+import { clearAuthCookie } from '../lib/auth.js'
+import { successResponse, withErrorHandling } from '../lib/response.js'
 
 async function handler(req, res) {
   if (req.method !== 'POST') {

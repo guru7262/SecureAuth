@@ -1,7 +1,7 @@
-import { getCollection } from '../../lib/mongodb.js'
-import { validate, resetPasswordSchema } from '../../lib/validation.js'
-import { hashPassword } from '../../lib/auth.js'
-import { successResponse, errorResponse, withErrorHandling } from '../../lib/response.js'
+import { getCollection } from '../lib/mongodb.js'
+import { validate, resetPasswordSchema } from '../lib/validation.js'
+import { hashPassword } from '../lib/auth.js'
+import { successResponse, errorResponse, withErrorHandling } from '../lib/response.js'
 
 async function handler(req, res) {
   if (req.method !== 'POST') {

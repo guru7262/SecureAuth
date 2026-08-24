@@ -1,7 +1,7 @@
-import { getCollection } from '../../lib/mongodb.js'
-import { validate, loginSchema } from '../../lib/validation.js'
-import { verifyPassword, generateToken, setAuthCookie } from '../../lib/auth.js'
-import { successResponse, errorResponse, withErrorHandling } from '../../lib/response.js'
+import { getCollection } from '../lib/mongodb.js'
+import { validate, loginSchema } from '../lib/validation.js'
+import { verifyPassword, generateToken, setAuthCookie } from '../lib/auth.js'
+import { successResponse, errorResponse, withErrorHandling } from '../lib/response.js'
 
 async function handler(req, res) {
   if (req.method !== 'POST') {

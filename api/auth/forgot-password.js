@@ -1,6 +1,6 @@
-import { getCollection } from '../../lib/mongodb.js'
-import { validate, forgotPasswordSchema } from '../../lib/validation.js'
-import { successResponse, errorResponse, withErrorHandling } from '../../lib/response.js'
+import { getCollection } from '../lib/mongodb.js'
+import { validate, forgotPasswordSchema } from '../lib/validation.js'
+import { successResponse, errorResponse, withErrorHandling } from '../lib/response.js'
 import crypto from 'crypto'
 
 async function handler(req, res) {

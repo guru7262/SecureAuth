@@ -53,14 +53,26 @@ async function handler(req, res) {
   const userAgent = body.userAgent || req.headers['user-agent'] || 'Unknown'
   const timestamp = new Date()
 
-  await visitsCollection.insertOne({
+  // Deduplicate live-visitor tracking: only insert a new visit document
+  // if this IP hasn't been seen in the last 5 minutes (prevents refresh spam on liveVisits).
+  // totalVisits always increments regardless so every request is counted.
+  const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000)
+  const recentVisit = await visitsCollection.findOne({
     websiteId: website._id,
-    path,
-    method,
     ip,
-    userAgent,
-    timestamp,
+    timestamp: { $gte: fiveMinutesAgo },
   })
+
+  if (!recentVisit) {
+    await visitsCollection.insertOne({
+      websiteId: website._id,
+      path,
+      method,
+      ip,
+      userAgent,
+      timestamp,
+    })
+  }
 
   await websitesCollection.updateOne(
     { _id: website._id },

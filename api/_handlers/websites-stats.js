@@ -92,12 +92,13 @@ async function handler(req, res) {
 
   const siteFilter = { websiteId: { $in: siteIdQueries } }
 
-  // 1. Live visits in the last 5 minutes
+  // 1. Live visits in the last 5 minutes — count UNIQUE IPs, not raw hits
   const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000)
-  const liveVisits = await visitsCollection.countDocuments({
+  const liveIps = await visitsCollection.distinct('ip', {
     ...siteFilter,
     timestamp: { $gte: fiveMinutesAgo },
   })
+  const liveVisits = liveIps.length
 
   // 2. Total visits - count from visits collection AND website document for 100% real-time accuracy
   const totalVisitsCount = await visitsCollection.countDocuments(siteFilter)

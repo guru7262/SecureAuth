@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useCallback } from 'react'
+import { useEffect, useMemo, useState, useCallback, useRef } from 'react'
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import {
   Activity, ArrowUpRight, Bell, Bot, BrainCircuit, CheckCircle2,
@@ -331,19 +331,25 @@ function RealWebsiteDashboard() {
   const [simulating, setSimulating] = useState(false)
   const [sdkTab, setSdkTab] = useState('vercel')
 
+  // Keep ref in sync to avoid stale closures in polling interval
+  const selectedSiteIdRef = useRef(selectedSiteId)
+  selectedSiteIdRef.current = selectedSiteId
+
   // Registration form inputs
   const [nameInput, setNameInput] = useState('')
   const [domainInput, setDomainInput] = useState('')
 
   // Fetch website list & stats
   const loadData = useCallback(async (siteId) => {
+    const idToFetch = siteId !== undefined ? siteId : selectedSiteIdRef.current
     try {
-      const statsRes = await websiteApi.stats(siteId)
+      const statsRes = await websiteApi.stats(idToFetch)
       const currentStats = statsRes.stats || statsRes.data?.stats
       if (currentStats) {
         setStats(currentStats)
-        if (!siteId && currentStats.websiteId) {
+        if (!idToFetch && currentStats.websiteId) {
           setSelectedSiteId(currentStats.websiteId)
+          selectedSiteIdRef.current = currentStats.websiteId
         }
       } else {
         setStats(null)
@@ -362,11 +368,14 @@ function RealWebsiteDashboard() {
   }, [])
 
   useEffect(() => {
+    // Initial fetch on site switch
     loadData(selectedSiteId)
-    // Auto-poll every 3.5 seconds to reflect incoming traffic in real-time
+
+    // Robust polling every 2.5 seconds with latest ref ID
     const interval = setInterval(() => {
-      loadData(selectedSiteId)
-    }, 3500)
+      loadData(selectedSiteIdRef.current)
+    }, 2500)
+
     return () => clearInterval(interval)
   }, [selectedSiteId, loadData])
 
@@ -396,6 +405,7 @@ function RealWebsiteDashboard() {
       const newSiteId = newWebsite?._id
       if (newSiteId) {
         setSelectedSiteId(newSiteId)
+        selectedSiteIdRef.current = newSiteId
       }
       await loadData(newSiteId)
     } catch (err) {
@@ -426,10 +436,11 @@ function RealWebsiteDashboard() {
       })
       toast({
         title: 'Test visit sent!',
-        message: 'A visit was recorded. Notice the live and total visits increase!',
+        message: 'Hit recorded! Counters updating live.',
         variant: 'success'
       })
-      await loadData(stats.websiteId)
+      // Immediate reload
+      await loadData(selectedSiteIdRef.current || stats.websiteId)
     } catch (err) {
       toast({ title: 'Error', message: err.message, variant: 'error' })
     } finally {

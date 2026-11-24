@@ -328,6 +328,7 @@ function RealWebsiteDashboard() {
   const [registering, setRegistering] = useState(false)
   const [showRegisterForm, setShowRegisterForm] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [copiedSnippet, setCopiedSnippet] = useState(false)
   const [simulating, setSimulating] = useState(false)
   const [sdkTab, setSdkTab] = useState('vercel')
   const [dbWarning, setDbWarning] = useState(false)
@@ -426,6 +427,14 @@ function RealWebsiteDashboard() {
     } finally {
       setRegistering(false)
     }
+  }
+
+  // Copy code snippet
+  const handleCopySnippet = (code) => {
+    navigator.clipboard.writeText(code)
+    setCopiedSnippet(true)
+    toast({ title: 'Copied!', message: 'Code snippet copied to clipboard.', variant: 'success' })
+    setTimeout(() => setCopiedSnippet(false), 2000)
   }
 
   // Copy API Key
@@ -711,18 +720,11 @@ function RealWebsiteDashboard() {
         </div>
 
         {/* Tab 1: Vercel / Next.js */}
-        {sdkTab === 'vercel' && (
-          <div>
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
-              In your Vercel-hosted Next.js app, create or open <code>middleware.js</code> (or <code>middleware.ts</code>) in your root folder:
-            </div>
-            <div className="db-code-card">
-              <pre style={{ margin: 0 }}>
-{`// middleware.js (in your Next.js project on Vercel)
+        {sdkTab === 'vercel' && (() => {
+          const code = `// middleware.js — place this in your Next.js project root on Vercel
 import { NextResponse } from 'next/server';
 
 export function middleware(request) {
-  // Asynchronously report visit to Sentinel
   fetch('${window.location.origin}/api/traffic', {
     method: 'POST',
     headers: {
@@ -738,60 +740,92 @@ export function middleware(request) {
   return NextResponse.next();
 }
 
-// Only track actual page and API visits (skip static assets):
 export const config = {
   matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
-};`}
-              </pre>
+};`
+          return (
+            <div>
+              <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '0.65rem', lineHeight: 1.6 }}>
+                Create or open <code>middleware.js</code> (or <code>middleware.ts</code>) in your Next.js project root. This runs on every request before it hits your pages.
+              </p>
+              <div className="db-code-card" style={{ position: 'relative' }}>
+                <button
+                  className="db-code-copy-btn"
+                  onClick={() => handleCopySnippet(code)}
+                  title="Copy code"
+                >
+                  {copiedSnippet ? <Check size={13} /> : <Copy size={13} />}
+                  {copiedSnippet ? 'Copied!' : 'Copy'}
+                </button>
+                <pre style={{ margin: 0 }}>{code}</pre>
+              </div>
             </div>
-          </div>
-        )}
+          )
+        })()}
 
         {/* Tab 2: Node.js / Express */}
-        {sdkTab === 'express' && (
-          <div>
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
-              Drop the downloaded <code>sentinel-traffic.js</code> file into your project or install <code>@sentinel-security/node</code>:
-            </div>
-            <div className="db-code-card">
-              <pre style={{ margin: 0 }}>
-{`// In your Express server (app.js or server.js):
+        {sdkTab === 'express' && (() => {
+          const code = `// app.js or server.js — your Express entry point
 import express from 'express';
 import { sentinelTraffic } from './sentinel-traffic.js';
 
 const app = express();
 
-// Attach Sentinel Traffic tracking:
+// Attach Sentinel Traffic tracking middleware:
 app.use(sentinelTraffic({
   apiKey: '${stats.apiKey}',
   endpoint: '${window.location.origin}/api/traffic'
 }));
 
-app.get('/', (req, res) => res.send('Welcome to my website!'));`}
-              </pre>
+app.get('/', (req, res) => res.send('Welcome to my website!'));`
+          return (
+            <div>
+              <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '0.65rem', lineHeight: 1.6 }}>
+                Download <code>sentinel-traffic.js</code> using the button above and drop it into your project folder. Then add the middleware to your Express app:
+              </p>
+              <div className="db-code-card" style={{ position: 'relative' }}>
+                <button
+                  className="db-code-copy-btn"
+                  onClick={() => handleCopySnippet(code)}
+                  title="Copy code"
+                >
+                  {copiedSnippet ? <Check size={13} /> : <Copy size={13} />}
+                  {copiedSnippet ? 'Copied!' : 'Copy'}
+                </button>
+                <pre style={{ margin: 0 }}>{code}</pre>
+              </div>
             </div>
-          </div>
-        )}
+          )
+        })()}
 
         {/* Tab 3: HTML / React / Vite on Vercel */}
-        {sdkTab === 'html' && (
-          <div>
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
-              For static sites, React, Vue, or HTML pages hosted on Vercel, simply paste this script tag into your <code>index.html</code>:
-            </div>
-            <div className="db-code-card">
-              <pre style={{ margin: 0 }}>
-{`<!-- Paste inside <head> or right before </body> in your index.html -->
+        {sdkTab === 'html' && (() => {
+          const code = `<!-- Paste inside <head> or right before </body> in your index.html -->
 <script
   src="${window.location.origin}/sentinel-traffic.js"
   data-api-key="${stats.apiKey}"
   data-endpoint="${window.location.origin}/api/traffic"
   async
-></script>`}
-              </pre>
+></script>`
+          return (
+            <div>
+              <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '0.65rem', lineHeight: 1.6 }}>
+                For static sites, React (Vite), Vue, or plain HTML hosted anywhere — paste this single <code>&lt;script&gt;</code> tag into your <code>index.html</code>. No install needed.
+              </p>
+              <div className="db-code-card" style={{ position: 'relative' }}>
+                <button
+                  className="db-code-copy-btn"
+                  onClick={() => handleCopySnippet(code)}
+                  title="Copy code"
+                >
+                  {copiedSnippet ? <Check size={13} /> : <Copy size={13} />}
+                  {copiedSnippet ? 'Copied!' : 'Copy'}
+                </button>
+                <pre style={{ margin: 0 }}>{code}</pre>
+              </div>
             </div>
-          </div>
-        )}
+          )
+        })()}
       </div>
 
       {/* Recent Visits Table */}

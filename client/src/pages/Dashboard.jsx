@@ -330,6 +330,19 @@ function RealWebsiteDashboard() {
   const [copied, setCopied] = useState(false)
   const [simulating, setSimulating] = useState(false)
   const [sdkTab, setSdkTab] = useState('vercel')
+  const [dbWarning, setDbWarning] = useState(false)
+
+  // Check backend health for MongoDB status
+  useEffect(() => {
+    fetch('/api/health')
+      .then(r => r.json())
+      .then(d => {
+        if (d?.database === 'in-memory-fallback') {
+          setDbWarning(true)
+        }
+      })
+      .catch(() => {})
+  }, [])
 
   // Keep ref in sync to avoid stale closures in polling interval
   const selectedSiteIdRef = useRef(selectedSiteId)
@@ -521,6 +534,21 @@ function RealWebsiteDashboard() {
   // ───── Real Site Data View ─────
   return (
     <div className="db-view">
+      {dbWarning && (
+        <div style={{
+          background: 'rgba(245, 166, 35, 0.1)',
+          border: '1px solid var(--warning)',
+          borderRadius: '8px',
+          padding: '0.85rem 1.1rem',
+          marginBottom: '1.25rem',
+          fontSize: '0.85rem',
+          color: 'var(--text-primary)',
+          lineHeight: 1.5
+        }}>
+          ⚠️ <strong>Vercel Setup Note:</strong> Your Sentinel API is currently using temporary memory storage because <code>MONGODB_URI</code> is not set in your Vercel Project Settings. On Vercel Serverless, instances are isolated, so to ensure all visits are recorded, set <code>MONGODB_URI</code> in <strong>Vercel Dashboard → Settings → Environment Variables</strong>.
+        </div>
+      )}
+
       {/* Top Header with Site Info & Actions */}
       <div className="db-view-header">
         <div>
@@ -757,6 +785,7 @@ app.get('/', (req, res) => res.send('Welcome to my website!'));`}
 <script
   src="${window.location.origin}/sentinel-traffic.js"
   data-api-key="${stats.apiKey}"
+  data-endpoint="${window.location.origin}/api/traffic"
   async
 ></script>`}
               </pre>

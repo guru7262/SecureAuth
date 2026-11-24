@@ -56,14 +56,22 @@ export const authApi = {
 }
 
 export const websiteApi = {
-  list: () => request('/websites'),
+  list: () => request(`/websites?_t=${Date.now()}`, {
+    cache: 'no-store',
+  }),
   
   register: (payload) => request('/websites', {
     method: 'POST',
     body: JSON.stringify(payload),
   }),
 
-  stats: (websiteId) => request(`/websites/stats${websiteId ? `?websiteId=${websiteId}` : ''}`),
+  stats: (websiteId) => request(`/websites/stats?websiteId=${websiteId || ''}&_t=${Date.now()}`, {
+    cache: 'no-store',
+    headers: {
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache',
+    },
+  }),
 
   sendTraffic: (payload) => request('/traffic', {
     method: 'POST',

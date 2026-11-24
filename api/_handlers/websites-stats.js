@@ -9,6 +9,12 @@ async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS')
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-api-key')
 
+  // Explicitly disable any caching by browser or Vercel edge proxy
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0')
+  res.setHeader('Pragma', 'no-cache')
+  res.setHeader('Expires', '0')
+  res.setHeader('Surrogate-Control', 'no-store')
+
   if (req.method === 'OPTIONS') {
     return res.status(200).end()
   }
@@ -48,17 +54,25 @@ async function handler(req, res) {
   const websitesCollection = await getCollection('websites')
   const visitsCollection = await getCollection('visits')
 
-  let website
-  if (websiteId) {
-    try {
+  let website = null
+  const cleanSiteId = (websiteId && websiteId !== 'undefined' && websiteId !== 'null') ? String(websiteId).trim() : null
+
+  if (cleanSiteId) {
+    if (ObjectId.isValid(cleanSiteId)) {
       website = await websitesCollection.findOne({
-        _id: ObjectId.isValid(websiteId) ? new ObjectId(websiteId) : websiteId,
+        _id: new ObjectId(cleanSiteId),
         userId: user.userId,
       })
-    } catch {
-      website = await websitesCollection.findOne({ _id: websiteId, userId: user.userId })
     }
-  } else {
+    if (!website) {
+      website = await websitesCollection.findOne({
+        _id: cleanSiteId,
+        userId: user.userId,
+      })
+    }
+  }
+
+  if (!website) {
     website = await websitesCollection.findOne({ userId: user.userId })
   }
 
@@ -69,14 +83,29 @@ async function handler(req, res) {
     }))
   }
 
+  const siteIdStr = website._id.toString()
+  const siteIdQueries = [website._id]
+  if (ObjectId.isValid(siteIdStr)) {
+    siteIdQueries.push(new ObjectId(siteIdStr))
+  }
+  siteIdQueries.push(siteIdStr)
+
+  const siteFilter = { websiteId: { $in: siteIdQueries } }
+
+  // 1. Live visits in the last 5 minutes
   const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000)
   const liveVisits = await visitsCollection.countDocuments({
-    websiteId: website._id,
+    ...siteFilter,
     timestamp: { $gte: fiveMinutesAgo },
   })
 
+  // 2. Total visits - count from visits collection AND website document for 100% real-time accuracy
+  const totalVisitsCount = await visitsCollection.countDocuments(siteFilter)
+  const totalVisits = Math.max(website.totalVisits || 0, totalVisitsCount)
+
+  // 3. Recent visits
   const recentVisits = await visitsCollection
-    .find({ websiteId: website._id })
+    .find(siteFilter)
     .sort({ timestamp: -1 })
     .limit(15)
     .toArray()
@@ -88,7 +117,7 @@ async function handler(req, res) {
       domain: website.domain,
       apiKey: website.apiKey,
       liveVisits,
-      totalVisits: website.totalVisits || 0,
+      totalVisits,
       recentVisits,
     },
   }))

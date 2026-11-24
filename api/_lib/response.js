@@ -27,7 +27,7 @@ export function handleApiError(error) {
   return { status: 500, body: { success: false, message: error.message || 'Internal server error' } }
 }
 
-export async function withErrorHandling(handler) {
+export function withErrorHandling(handler) {
   return async (req, res) => {
     try {
       await handler(req, res)

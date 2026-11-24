@@ -1,0 +1,24 @@
+{
+  "name": "@sentinel-security/node",
+  "version": "1.0.0",
+  "description": "Lightweight traffic telemetry SDK for Sentinel security platform",
+  "main": "index.cjs",
+  "module": "index.js",
+  "type": "module",
+  "exports": {
+    "import": "./index.js",
+    "require": "./index.cjs"
+  },
+  "scripts": {
+    "build": "echo 'SDK ready'"
+  },
+  "keywords": [
+    "sentinel",
+    "traffic",
+    "telemetry",
+    "analytics",
+    "security"
+  ],
+  "author": "Sentinel Security",
+  "license": "MIT"
+}

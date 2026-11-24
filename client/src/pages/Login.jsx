@@ -222,6 +222,53 @@ export default function Login() {
         <button
           type="button"
           className="btn btn-secondary btn-full"
+          style={{
+            borderColor: 'var(--accent-primary)',
+            color: 'var(--accent-primary)',
+            background: 'rgba(34, 211, 238, 0.06)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '0.5rem',
+            marginBottom: '0.75rem',
+            fontWeight: 500,
+          }}
+          disabled={isLoading}
+          onClick={async () => {
+            setIsLoading(true)
+            try {
+              const result = await login({ email: 'demo@sentinel.security', password: 'demo' })
+              if (result.success) {
+                toast({
+                  title: 'Demo Mode Active',
+                  message: 'Signed in as Demo User. All simulated dummy data is displayed.',
+                  variant: 'success',
+                })
+                navigate('/dashboard', { replace: true })
+              } else {
+                toast({
+                  title: 'Sign in failed',
+                  message: result.error,
+                  variant: 'error',
+                })
+              }
+            } catch (err) {
+              toast({
+                title: 'Error',
+                message: err.message || 'Failed to login demo account',
+                variant: 'error',
+              })
+            } finally {
+              setIsLoading(false)
+            }
+          }}
+        >
+          <span>⚡ Try Demo Account (View Dummy Data)</span>
+        </button>
+
+        <button
+          type="button"
+          className="btn btn-secondary btn-full"
           onClick={() => navigate('/signup')}
         >
           Create an account

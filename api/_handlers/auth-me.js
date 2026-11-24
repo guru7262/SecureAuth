@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb'
-import { getCollection } from '../lib/mongodb.js'
-import { authenticateRequest } from '../lib/auth.js'
-import { successResponse, errorResponse, withErrorHandling } from '../lib/response.js'
+import { getCollection } from '../_lib/mongodb.js'
+import { authenticateRequest } from '../_lib/auth.js'
+import { successResponse, errorResponse, withErrorHandling } from '../_lib/response.js'
 
 async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -11,6 +11,18 @@ async function handler(req, res) {
   const decoded = await authenticateRequest(req)
   if (!decoded) {
     return res.status(401).json(errorResponse('Not authenticated', 401))
+  }
+
+  if (decoded.isDemo || decoded.userId === 'demo-user-id') {
+    return res.status(200).json(successResponse({
+      user: {
+        id: 'demo-user-id',
+        name: decoded.name || 'Demo Account',
+        email: decoded.email || 'demo@sentinel.security',
+        isDemo: true,
+        createdAt: new Date().toISOString(),
+      },
+    }))
   }
 
   const usersCollection = await getCollection('users')

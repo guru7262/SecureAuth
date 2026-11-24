@@ -55,4 +55,20 @@ export const authApi = {
   }),
 }
 
+export const websiteApi = {
+  list: () => request('/websites'),
+  
+  register: (payload) => request('/websites', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  }),
+
+  stats: (websiteId) => request(`/websites/stats${websiteId ? `?websiteId=${websiteId}` : ''}`),
+
+  sendTraffic: (payload) => request('/traffic', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  }),
+}
+
 export { ApiError }

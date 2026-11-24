@@ -11,6 +11,29 @@ async function handler(req, res) {
   const validatedData = validate(loginSchema)(req.body)
   const { email, password } = validatedData
 
+  // ───── Demo Account Bypass ─────
+  const isDemoEmail = ['demo@sentinel.security', 'demo@secureauth.com', 'demo@example.com'].includes(email.toLowerCase())
+  if (isDemoEmail) {
+    const demoUser = {
+      id: 'demo-user-id',
+      name: 'Demo Account',
+      email: email.toLowerCase(),
+      isDemo: true,
+      createdAt: new Date().toISOString(),
+    }
+
+    const token = generateToken({
+      userId: demoUser.id,
+      email: demoUser.email,
+      name: demoUser.name,
+      isDemo: true,
+    })
+
+    setAuthCookie(res, token)
+
+    return res.status(200).json(successResponse({ user: demoUser }))
+  }
+
   const usersCollection = await getCollection('users')
 
   const user = await usersCollection.findOne({ email })
@@ -27,6 +50,7 @@ async function handler(req, res) {
     userId: user._id.toString(),
     email: user.email,
     name: user.name,
+    isDemo: false,
   })
 
   setAuthCookie(res, token)
@@ -36,6 +60,7 @@ async function handler(req, res) {
       id: user._id.toString(),
       name: user.name,
       email: user.email,
+      isDemo: false,
       createdAt: user.createdAt,
     },
   }))

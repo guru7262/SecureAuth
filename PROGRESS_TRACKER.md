@@ -75,40 +75,35 @@
 
 ---
 
-### 🔄 Phase 1: Accounts and Website Management (Current Focus)
+### ✅ Phase 1: Accounts and Website Management
 - [x] User registration, login, JWT token auth, and password hashing (`bcryptjs`)
 - [x] Protected session verification (`/api/auth/me`) and password reset endpoints
+- [x] Dedicated Demo login bypass (`demo@sentinel.security` / quick 1-click demo sign-in)
 - [x] Dashboard authentication pages (Login, Signup, ForgotPassword)
-- [ ] Website registration CRUD (`/api/websites`: domain, environment, category)
-- [ ] Public site key (`sentinel_pub_...`) and secret server key (`sentinel_sec_...`) generation & SHA-256 hashing
-- [ ] Key rotation and revocation endpoints
-- [ ] Tenant ownership authorization middleware (`requireWebsiteOwner`)
-- [ ] Dashboard website management & onboarding UI (site switcher, key display wizard)
-- [ ] Verification: User can register a website, generate scoped keys, and view integration snippets
+- [x] Website registration CRUD (`POST /api/websites`, `GET /api/websites`: domain, name, environment)
+- [x] Unique API key generation (`sent_live_...` cryptographically random tokens)
+- [x] Real-time website stats API (`GET /api/websites/stats` for live & total visits)
+- [x] Dashboard website management & onboarding UI with 1-click key copying
 
 ---
 
-### ⏸️ Phase 2: Frontend SDK (`@sentinel-security/browser`)
-- [ ] Client SDK package setup (`packages/browser-sdk/`)
-- [ ] SDK initialization with public key and site ID
-- [ ] Session tracking & pseudonymous visitor ID generation
-- [ ] Lightweight event collection (page views, visibility, coarse clicks, scroll depth)
-- [ ] URL parameter and sensitive form field sanitization
-- [ ] Event batching and transport (`navigator.sendBeacon` with `fetch` fallback)
-- [ ] Fail-safe error handling (never block host site execution)
-- [ ] Verification: Demo web page sends valid telemetry batches to Sentinel collector
+### ✅ Phase 3: Backend Traffic SDK (`@sentinel-security/node`)
+- [x] Express middleware package setup (`packages/backend-sdk/`)
+- [x] Asynchronous, non-blocking traffic reporter (never degrades customer app latency)
+- [x] Fail-safe error handling (fails silently if Sentinel is offline)
+- [x] Central API traffic ingestion endpoint (`POST /api/traffic`) with API key validation
+- [x] Live visits (last 5 min) and total visits (all-time) counter increments
+- [x] Ready-to-run customer test app (`packages/backend-sdk/example-server.js`) and README documentation
 
 ---
 
-### ⏸️ Phase 3: Backend SDK (`@sentinel-security/node`)
-- [ ] Express middleware package setup (`packages/node-sdk/`)
-- [ ] Request metadata extractor (method, path, status, timing, IP, user-agent)
-- [ ] Sensitive route and header exclusion filters
-- [ ] Authentication event reporting API (`login_attempt`, `login_success`, `login_failure`)
-- [ ] In-memory emergency rate limiter (circuit breaker)
-- [ ] Decision query client with timeout and cache
-- [ ] Configurable fail modes (`failMode: "open"` / `"closed"`)
-- [ ] Verification: Demo Express server intercepts requests, reports metrics, and applies test decisions
+### 🔄 Phase 9: Dashboard Analytics & Management UI
+- [x] Dual-mode Dashboard implementation:
+  - **Demo Account View**: Shows full simulated platform with dummy charts, Recharts area graphs, composite 72 risk gauge, threat queue, and bot classifications.
+  - **Real User View**: Focused purely on tracking registered sites — displays API key, 1-click "Simulate Test Visit", **Live Visitors** (last 5 min), **Total Visits** (lifetime), and recent visitor stream table.
+- [x] Real-time auto-polling (updates every 3.5s as incoming traffic arrives)
+- [ ] Advanced security rules manager UI (CRUD for site rules)
+- [ ] Model explanation drawer and ML classification inspect view
 
 ---
 

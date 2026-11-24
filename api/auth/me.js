@@ -13,6 +13,19 @@ async function handler(req, res) {
     return res.status(401).json(errorResponse('Not authenticated', 401))
   }
 
+  // ───── Demo Account Fast Path ─────
+  if (decoded.isDemo || decoded.userId === 'demo-user-id') {
+    return res.status(200).json(successResponse({
+      user: {
+        id: 'demo-user-id',
+        name: decoded.name || 'Demo Account',
+        email: decoded.email || 'demo@sentinel.security',
+        isDemo: true,
+        createdAt: new Date().toISOString(),
+      },
+    }))
+  }
+
   const usersCollection = await getCollection('users')
 
   const user = await usersCollection.findOne(

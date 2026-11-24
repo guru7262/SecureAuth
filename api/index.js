@@ -13,10 +13,20 @@ import websitesHandler from './_handlers/websites.js'
 import statsHandler from './_handlers/websites-stats.js'
 import trafficHandler from './_handlers/traffic.js'
 
+import { connectToDatabase } from './_lib/mongodb.js'
+
 const app = express()
 
-// Middlewares
-app.use(cors({ origin: true, credentials: true }))
+// Universal CORS handling for cross-origin customer sites & SDKs
+const corsOptions = {
+  origin: (origin, callback) => callback(null, true),
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key', 'X-Requested-With', 'Accept'],
+}
+
+app.use(cors(corsOptions))
+app.options('*', cors(corsOptions))
 app.use(express.json())
 app.use(cookieParser())
 
@@ -38,9 +48,16 @@ router.all('/websites', websitesHandler)
 // Traffic Ingestion Endpoint
 router.all('/traffic', trafficHandler)
 
-// Health Endpoint
-router.get('/health', (req, res) => {
-  res.json({ status: 'ok', service: 'sentinel-api', timestamp: new Date() })
+// Health Endpoint with database connectivity diagnostic
+router.get('/health', async (req, res) => {
+  const { client } = await connectToDatabase()
+  const isMongoConnected = Boolean(client)
+  res.json({
+    status: 'ok',
+    database: isMongoConnected ? 'mongodb-connected' : 'in-memory-fallback',
+    service: 'sentinel-api',
+    timestamp: new Date()
+  })
 })
 
 // Support both /api/* and /* paths seamlessly

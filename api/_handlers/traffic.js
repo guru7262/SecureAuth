@@ -22,11 +22,14 @@ async function handler(req, res) {
     apiKey = req.body.apiKey
   }
 
-  if (!apiKey) {
+  const cleanKey = typeof apiKey === 'string' ? apiKey.trim() : ''
+
+  if (!cleanKey) {
+    console.warn('[Sentinel Traffic] Rejected: Missing API key.')
     return res.status(401).json(errorResponse('API key is required. Pass in x-api-key header or body.', 401))
   }
 
-  if (apiKey === 'sent_live_demo87654321abcdef0123456789') {
+  if (cleanKey === 'sent_live_demo87654321abcdef0123456789') {
     return res.status(200).json(successResponse({
       recorded: true,
       site: 'store.sentinel-security.dev',
@@ -37,8 +40,9 @@ async function handler(req, res) {
   const websitesCollection = await getCollection('websites')
   const visitsCollection = await getCollection('visits')
 
-  const website = await websitesCollection.findOne({ apiKey })
+  const website = await websitesCollection.findOne({ apiKey: cleanKey })
   if (!website) {
+    console.warn(`[Sentinel Traffic] ❌ Rejected: No website found in database matching API key: "${cleanKey}"`)
     return res.status(404).json(errorResponse('Invalid API key. No matching registered website found.', 404))
   }
 
@@ -62,6 +66,8 @@ async function handler(req, res) {
     { _id: website._id },
     { $inc: { totalVisits: 1 }, $set: { updatedAt: timestamp } }
   )
+
+  console.log(`[Sentinel Traffic] ✅ Recorded visit for "${website.name}" (${website.domain}) - Path: ${path}`)
 
   return res.status(200).json(successResponse({
     recorded: true,

@@ -1,11 +1,10 @@
 import crypto from 'crypto'
 import { ObjectId } from 'mongodb'
-import { getCollection } from '../lib/mongodb.js'
-import { authenticateRequest } from '../lib/auth.js'
-import { successResponse, errorResponse, withErrorHandling } from '../lib/response.js'
+import { getCollection } from '../_lib/mongodb.js'
+import { authenticateRequest } from '../_lib/auth.js'
+import { successResponse, errorResponse, withErrorHandling } from '../_lib/response.js'
 
 async function handler(req, res) {
-  // CORS support
   res.setHeader('Access-Control-Allow-Credentials', 'true')
   res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*')
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
@@ -22,7 +21,7 @@ async function handler(req, res) {
 
   const websitesCollection = await getCollection('websites')
 
-  // ───── GET: List Websites ─────
+  // GET: List Websites
   if (req.method === 'GET') {
     if (user.isDemo || user.userId === 'demo-user-id') {
       const demoSites = [
@@ -43,7 +42,7 @@ async function handler(req, res) {
     return res.status(200).json(successResponse({ websites: sites }))
   }
 
-  // ───── POST: Register New Website ─────
+  // POST: Register New Website
   if (req.method === 'POST') {
     const { name, domain } = req.body || {}
 
@@ -54,7 +53,6 @@ async function handler(req, res) {
     const cleanedDomain = domain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '')
     const siteName = name?.trim() || cleanedDomain
 
-    // If demo user registers a site, return an ephemeral site
     if (user.isDemo || user.userId === 'demo-user-id') {
       const demoKey = `sent_live_${crypto.randomBytes(16).toString('hex')}`
       const demoSite = {
@@ -69,7 +67,6 @@ async function handler(req, res) {
       return res.status(201).json(successResponse({ website: demoSite }, 201))
     }
 
-    // Generate unique API key for this website
     const apiKey = `sent_live_${crypto.randomBytes(16).toString('hex')}`
 
     const websiteDoc = {

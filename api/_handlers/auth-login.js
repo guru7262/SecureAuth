@@ -1,7 +1,7 @@
-import { getCollection } from '../lib/mongodb.js'
-import { validate, loginSchema } from '../lib/validation.js'
-import { verifyPassword, generateToken, setAuthCookie } from '../lib/auth.js'
-import { successResponse, errorResponse, withErrorHandling } from '../lib/response.js'
+import { getCollection } from '../_lib/mongodb.js'
+import { validate, loginSchema } from '../_lib/validation.js'
+import { verifyPassword, generateToken, setAuthCookie } from '../_lib/auth.js'
+import { successResponse, errorResponse, withErrorHandling } from '../_lib/response.js'
 
 async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -11,7 +11,7 @@ async function handler(req, res) {
   const validatedData = validate(loginSchema)(req.body)
   const { email, password } = validatedData
 
-  // ───── Demo Account Bypass ─────
+  // Demo Account Fast Path
   const isDemoEmail = ['demo@sentinel.security', 'demo@secureauth.com', 'demo@example.com'].includes(email.toLowerCase())
   if (isDemoEmail) {
     const demoUser = {

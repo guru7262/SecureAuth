@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb'
-import { getCollection } from '../lib/mongodb.js'
-import { authenticateRequest } from '../lib/auth.js'
-import { successResponse, errorResponse, withErrorHandling } from '../lib/response.js'
+import { getCollection } from '../_lib/mongodb.js'
+import { authenticateRequest } from '../_lib/auth.js'
+import { successResponse, errorResponse, withErrorHandling } from '../_lib/response.js'
 
 async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -13,7 +13,6 @@ async function handler(req, res) {
     return res.status(401).json(errorResponse('Not authenticated', 401))
   }
 
-  // ───── Demo Account Fast Path ─────
   if (decoded.isDemo || decoded.userId === 'demo-user-id') {
     return res.status(200).json(successResponse({
       user: {

@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb'
-import { getCollection } from '../lib/mongodb.js'
-import { authenticateRequest } from '../lib/auth.js'
-import { successResponse, errorResponse, withErrorHandling } from '../lib/response.js'
+import { getCollection } from '../_lib/mongodb.js'
+import { authenticateRequest } from '../_lib/auth.js'
+import { successResponse, errorResponse, withErrorHandling } from '../_lib/response.js'
 
 async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Credentials', 'true')
@@ -24,7 +24,7 @@ async function handler(req, res) {
 
   const { websiteId } = req.query || {}
 
-  // ───── Demo User Stats ─────
+  // Demo User Stats
   if (user.isDemo || user.userId === 'demo-user-id') {
     return res.status(200).json(successResponse({
       stats: {
@@ -59,7 +59,6 @@ async function handler(req, res) {
       website = await websitesCollection.findOne({ _id: websiteId, userId: user.userId })
     }
   } else {
-    // Default to the first website of the user
     website = await websitesCollection.findOne({ userId: user.userId })
   }
 
@@ -70,14 +69,12 @@ async function handler(req, res) {
     }))
   }
 
-  // Calculate live visits in last 5 minutes
   const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000)
   const liveVisits = await visitsCollection.countDocuments({
     websiteId: website._id,
     timestamp: { $gte: fiveMinutesAgo },
   })
 
-  // Recent visits stream (latest 15)
   const recentVisits = await visitsCollection
     .find({ websiteId: website._id })
     .sort({ timestamp: -1 })

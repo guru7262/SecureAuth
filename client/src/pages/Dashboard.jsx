@@ -339,18 +339,20 @@ function RealWebsiteDashboard() {
   const loadData = useCallback(async (siteId) => {
     try {
       const statsRes = await websiteApi.stats(siteId)
-      if (statsRes.data?.stats) {
-        setStats(statsRes.data.stats)
-        if (!siteId) {
-          setSelectedSiteId(statsRes.data.stats.websiteId)
+      const currentStats = statsRes.stats || statsRes.data?.stats
+      if (currentStats) {
+        setStats(currentStats)
+        if (!siteId && currentStats.websiteId) {
+          setSelectedSiteId(currentStats.websiteId)
         }
       } else {
         setStats(null)
       }
 
       const listRes = await websiteApi.list()
-      if (listRes.data?.websites) {
-        setWebsites(listRes.data.websites)
+      const currentWebsites = listRes.websites || listRes.data?.websites
+      if (Array.isArray(currentWebsites)) {
+        setWebsites(currentWebsites)
       }
     } catch (err) {
       console.error('Failed to load website stats', err)
@@ -382,6 +384,7 @@ function RealWebsiteDashboard() {
         name: nameInput.trim() || domainInput.trim(),
         domain: domainInput.trim()
       })
+      const newWebsite = res.website || res.data?.website
       toast({
         title: 'Website registered!',
         message: 'Your API key has been generated. Use it in the Backend SDK.',
@@ -390,8 +393,10 @@ function RealWebsiteDashboard() {
       setShowRegisterForm(false)
       setNameInput('')
       setDomainInput('')
-      const newSiteId = res.data?.website?._id
-      setSelectedSiteId(newSiteId)
+      const newSiteId = newWebsite?._id
+      if (newSiteId) {
+        setSelectedSiteId(newSiteId)
+      }
       await loadData(newSiteId)
     } catch (err) {
       toast({ title: 'Registration failed', message: err.message, variant: 'error' })

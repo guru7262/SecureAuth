@@ -93,15 +93,42 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
     const scriptApiKey = script?.getAttribute('data-api-key');
     const customEndpoint = script?.getAttribute('data-endpoint') || detectSentinelOrigin();
 
-    if (scriptApiKey) {
+    if (!scriptApiKey) return;
+
+    function sendPing(path) {
       trackVisit({
         apiKey: scriptApiKey,
         endpoint: customEndpoint,
-        path: window.location.pathname || '/',
+        path: path || window.location.pathname || '/',
         method: 'GET',
         userAgent: navigator.userAgent
       });
     }
+
+    // 1. Initial ping on page load
+    sendPing(window.location.pathname);
+
+    // 2. Heartbeat every 2 minutes — keeps the visitor inside the 5-min live window
+    //    so they don't disappear while still on the page
+    const HEARTBEAT_MS = 2 * 60 * 1000; // 2 minutes
+    const heartbeatTimer = setInterval(() => {
+      // Only send heartbeat if the tab is visible
+      if (document.visibilityState !== 'hidden') {
+        sendPing(window.location.pathname);
+      }
+    }, HEARTBEAT_MS);
+
+    // 3. Track SPA navigation (React Router, Next.js, etc.)
+    //    Intercept history.pushState so route changes register as new visits
+    const _origPush = history.pushState.bind(history);
+    history.pushState = function (...args) {
+      _origPush(...args);
+      sendPing(window.location.pathname);
+    };
+    window.addEventListener('popstate', () => sendPing(window.location.pathname));
+
+    // 4. Cleanup on tab close (best-effort)
+    window.addEventListener('beforeunload', () => clearInterval(heartbeatTimer));
   }
 
   if (document.readyState === 'loading') {
